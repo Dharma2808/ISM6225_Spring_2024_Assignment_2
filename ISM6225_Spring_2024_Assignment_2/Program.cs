@@ -6,6 +6,7 @@ WRITE YOUR CODE IN THE RESPECTIVE QUESTION FUNCTION BLOCK
 
 */
 
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace ISM6225_Spring_2024_Assignment_2
@@ -30,7 +31,7 @@ namespace ISM6225_Spring_2024_Assignment_2
             //Question 3:
             Console.WriteLine("Question 3:");
             int[] nums3 = { -1, 0, 1, 2, -1, -4 };
-            IList<IList<int>> triplets = ThreeSum(nums3);
+            IList<IList<int>> triplets = ThreeSum(nums3);                  
             string tripletResult = ConvertIListToNestedList(triplets);
             Console.WriteLine(tripletResult);
 
@@ -100,7 +101,24 @@ namespace ISM6225_Spring_2024_Assignment_2
             try
             {
                 // Write your code here and you can modify the return value according to the requirements
-                return 0;
+                if (nums.Length==0)//if array is empty
+                {
+                    return 0;
+                }
+                //Initialize the number of unique elements to 1 (since the first element is always unique)
+                int numberOfUniqueNumbers = 1;
+
+                // Iterate through the array starting from the second element and compare with the previous element
+                for (int i=1; i < nums.Length; i++)
+                {
+                    if (nums[i] != nums[numberOfUniqueNumbers-1])
+                    {
+                        nums[numberOfUniqueNumbers] = nums[i];
+                        numberOfUniqueNumbers++;
+                    }
+                }
+
+                return numberOfUniqueNumbers;
             }
             catch (Exception)
             {
@@ -135,7 +153,24 @@ namespace ISM6225_Spring_2024_Assignment_2
             try
             {
                 // Write your code here and you can modify the return value according to the requirements
-                return new List<int>();
+                int k = 0;//to keep track of the position where non-zero elements position
+
+                for (int i = 0; i < nums.Length; i++)
+                {
+                    if (nums[i] != 0)
+                    {
+                        nums[k]= nums[i];// If the current element is non-zero, move it to the correct position
+                        k++;//increment for non-zero elements
+                    }
+                }
+                // to fill the remaining positions with zeros
+                for (int i = k; i < nums.Length; i++)
+                {
+                    nums[i] = 0;
+                }
+
+                return nums.ToList();//converting the list back to array
+
             }
             catch (Exception)
             {
@@ -186,7 +221,52 @@ namespace ISM6225_Spring_2024_Assignment_2
             try
             {
                 // Write your code here and you can modify the return value according to the requirements
-                return new List<IList<int>>();
+
+                List<IList<int>> result = new List<IList<int>>();
+                if (nums.Length < 3) //If the array has less than 3 elements, return an empty result 
+                    return result;
+
+                Array.Sort(nums); // sort the array
+
+                for (int i = 0; i < nums.Length - 2; i++)
+                {
+                    if (i > 0 && nums[i] == nums[i - 1])
+                        continue; //Skip duplicates for the first element
+
+                    int left = i + 1;
+                    int right = nums.Length - 1;
+
+                    while (left < right)
+                    {
+                        int sum = nums[i] + nums[left] + nums[right];
+
+                        if (sum == 0)
+                        {
+                            result.Add(new List<int> { nums[i], nums[left], nums[right] });
+                            // Skip duplicates for the second element
+                            while (left < right && nums[left] == nums[left + 1])
+                                left++;
+                            // Skip duplicates for the third element
+                            while (left < right && nums[right] == nums[right - 1])
+                                right--;
+
+                            left++;
+                            right--;
+                        }
+                        else if (sum < 0)
+                        {
+                            left++;
+                        }
+                        else
+                        {
+                            right--;
+                        }
+                    }
+                }
+
+                return result;
+
+                
             }
             catch (Exception)
             {
@@ -221,7 +301,28 @@ namespace ISM6225_Spring_2024_Assignment_2
             try
             {
                 // Write your code here and you can modify the return value according to the requirements
-                return 0;
+                //Initializing maximum and current consecutive number of ones
+                int maxConsecutiveOnes = 0; 
+                int currentConsecutiveOnes = 0; 
+
+                foreach (int num in nums)
+                {
+                    if (num == 1)
+                    {
+                        // If the current element is 1, increment the current consecutive ones
+                        currentConsecutiveOnes++;
+                        
+                        maxConsecutiveOnes = Math.Max(maxConsecutiveOnes, currentConsecutiveOnes);
+                    }
+                    else
+                    {
+                        // If the current element is 0, reset the current consecutive ones count
+                        currentConsecutiveOnes = 0;
+                    }
+                }
+
+                return maxConsecutiveOnes;
+                
             }
             catch (Exception)
             {
@@ -257,7 +358,19 @@ namespace ISM6225_Spring_2024_Assignment_2
             try
             {
                 // Write your code here and you can modify the return value according to the requirements
-                return 0;
+                int decimalValue = 0; //initializing decimal value
+                int baseValue = 1; // initializing 2^0 value
+
+                while (binary > 0)
+                {
+                    int lastDigit = binary % 10; //last digit of binary number
+                    decimalValue += lastDigit * baseValue; 
+                    baseValue *= 2; //multiply by 2 to get the next digit
+                    binary /= 10; //remove last digit from binary number
+                }
+
+                return decimalValue;
+
             }
             catch (Exception)
             {
@@ -295,7 +408,20 @@ namespace ISM6225_Spring_2024_Assignment_2
             try
             {
                 // Write your code here and you can modify the return value according to the requirements
-                return 0;
+                if (nums.Length < 2) //if the array has less than 2 elements, return 0
+                    return 0;
+
+                Array.Sort(nums);// sorting the array
+
+                int maxGap = 0;// initializing maxGap
+                for (int i = 1; i < nums.Length; i++)
+                {
+                    // Calculate the difference between successive elements
+                    int difference = nums[i] - nums[i - 1];
+                    maxGap = Math.Max(maxGap, difference);
+                }
+
+                return maxGap;
             }
             catch (Exception)
             {
@@ -335,7 +461,21 @@ namespace ISM6225_Spring_2024_Assignment_2
             try
             {
                 // Write your code here and you can modify the return value according to the requirements
-                return 0;
+                int n = nums.Length;
+                if (n < 3) // If the array contains less than 3 elements, return 0 
+                    return 0;
+
+        
+        Array.Sort(nums);//sort in ascending order
+        Array.Reverse(nums);//reversing the sorted array
+
+        for (int i = 0; i < n - 2; i++)
+        {
+            if (nums[i] < nums[i + 1] + nums[i + 2])//checks possibility of forming a triangle
+                return nums[i] + nums[i + 1] + nums[i + 2];//returns largest perimeter
+        }
+
+        return 0; // if no valid triangle is formed
             }
             catch (Exception)
             {
@@ -389,7 +529,17 @@ namespace ISM6225_Spring_2024_Assignment_2
             try
             {
                 // Write your code here and you can modify the return value according to the requirements
-                return "";
+                StringBuilder result = new StringBuilder(s);
+                int index = result.ToString().IndexOf(part);// Find the first occurrence of part
+
+                while (index != -1)
+                {
+                    // Remove 'part' from the result string
+                    result.Remove(index, part.Length);
+                    index = result.ToString().IndexOf(part); // Find the next occurrence of 'part'
+                }
+
+                return result.ToString();// Return the modified string
             }
             catch (Exception)
             {
